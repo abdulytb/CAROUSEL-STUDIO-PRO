@@ -1,0 +1,1 @@
+const fs=require("fs");const path=require("path");const b64=fs.readFileSync(process.argv[2],"utf8").trim();const out=process.argv[3];fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,Buffer.from(b64,"base64"));console.log("wrote:",out);
