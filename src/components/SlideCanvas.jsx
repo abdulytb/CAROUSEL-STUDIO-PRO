@@ -9,9 +9,11 @@ import { setFontScale } from "../lib/textFit.js";
 // Kalau templateKey tidak dikenali (data korup / provider AI aneh-aneh),
 // jatuh ke ModernTemplate sebagai default aman.
 //
-// Pengecualian: slide hook (pertama) dengan dna.heroImage terisi (hasil AI
-// image generation) dirender lewat HeroSlide, bukan template biasa —
-// lihat catatan di HeroSlide.jsx.
+// Pengecualian: slide dengan gambar AI dirender lewat HeroSlide, bukan
+// template biasa — dua sumber gambar yang dicek:
+// 1. slide.image — mode "Gambar AI di Semua Slide" (tiap slide beda gambar)
+// 2. dna.heroImage pada slide hook — mode lama "Gambar AI di Slide Cover"
+// (lihat catatan lengkap di HeroSlide.jsx).
 //
 // setFontScale(dna.fontScale) dipanggil di sini — SATU titik pusat —
 // supaya fitur "Ukuran Teks" custom (lihat SIZE_OPTIONS di
@@ -20,9 +22,10 @@ import { setFontScale } from "../lib/textFit.js";
 export default function SlideCanvas({ slide, dna, index, total }) {
   setFontScale(dna.fontScale);
 
-    if (slide.role === "hook" && dna.heroImage) {
+    if (slide.image || (slide.role === "hook" && dna.heroImage)) {
         return <HeroSlide slide={slide} dna={dna} />;
           }
             const Template = TEMPLATE_COMPONENTS[dna.templateKey] || ModernTemplate;
               return <Template slide={slide} dna={dna} index={index} total={total} />;
               }
+              
