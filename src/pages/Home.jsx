@@ -8,6 +8,7 @@ import { generateHashtags } from "../ai/engines/hashtagEngine.js";
 import { generateCaptions } from "../ai/engines/captionEngine.js";
 import { buildDesignDNA } from "../ai/engines/designDNAEngine.js";
 import { PROVIDERS, generateWithFallback, toGeneratedCarousel } from "../ai/providers/index.js";
+import { generateHeroImage } from "../ai/providers/imageProvider.js";
 import {
   nodeToCanvas, exportNodeAsPng, exportNodeAsJpg, downloadBlob,
   buildPdfFromJpegs, buildZip, dataUrlToUint8,
@@ -26,13 +27,14 @@ import CaptionPanel from "../components/CaptionPanel.jsx";
 import { secondaryBtnStyle } from "../components/common.jsx";
 
 const DEFAULT_SETTINGS = {
-  provider: "local", apiKey: "", model: "", useProxy: false, proxyUrl: "", rememberApiKey: false,
+  provider: "local", apiKey: "", model: "", useProxy: false, proxyUrl: "", rememberApiKey: false, includeHeroImage: false,
 };
 
 export default function Home() {
   const [topic, setTopic] = useState("5 Cara AI Membantu Produktivitas Karyawan");
   const [templateOverride, setTemplateOverride] = useState(() => loadTemplateOverride());
   const [slideCount, setSlideCount] = useState(null); // null = Auto (deteksi dari teks topik)
+  const [customBadge, setCustomBadge] = useState(""); // "" = pakai label kategori otomatis
   const [generated, setGenerated] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState("");
@@ -51,6 +53,7 @@ export default function Home() {
   const [aiTestStatus, setAiTestStatus] = useState(null); // null | 'ok' | 'fail'
   const [aiTestMsg, setAiTestMsg] = useState("");
   const [fallbackNotice, setFallbackNotice] = useState("");
+  const [heroImageError, setHeroImageError] = useState("");
 
   const activeModel = settings.model || PROVIDERS[settings.provider].defaultModel;
 
@@ -77,17 +80,19 @@ export default function Home() {
     const templateKey = templateOverride === "auto" ? undefined : templateOverride;
     const framework = detectFramework(t);
     const dna = buildDesignDNA(t, templateKey, framework.type);
+    if (customBadge.trim()) dna.badge = customBadge.trim();
     const slides = buildSlides(t, framework, category, slideCount);
     const hashtags = generateHashtags(t, category);
     const captions = generateCaptions(t, slides, hashtags);
     return { topic: t, dna, slides, hashtags, captions };
-  }, [templateOverride, slideCount]);
+  }, [templateOverride, slideCount, customBadge]);
 
   const handleGenerate = useCallback(async () => {
     const t = topic.trim();
     if (!t) return;
     setExportError("");
     setFallbackNotice("");
+    setHeroImageError("");
 
     if (settings.provider === "local") {
       setGenerated(runLocalEngine(t));
@@ -98,23 +103,30 @@ export default function Home() {
     setAiLoading(true);
     try {
       const templateKey = templateOverride === "auto" ? undefined : templateOverride;
-      // Framework tetap dideteksi dari topik mentah walau teksnya nanti
-      // datang dari AI Connector — supaya Layout Engine tetap konsisten
-      // apa pun sumber kontennya (lihat catatan di layoutEngine.js).
       const framework = detectFramework(t);
       const dna = buildDesignDNA(t, templateKey, framework.type);
+      if (customBadge.trim()) dna.badge = customBadge.trim();
       const { data, usedFallback, error } = await generateWithFallback({ ...settings, model: activeModel, slideCount }, t);
+      const result = toGeneratedCarousel(t, data, dna);
+      if (customBadge.trim()) result.dna.badge = customBadge.trim();
       if (usedFallback) {
         setFallbackNotice(`${PROVIDERS[settings.provider].name} gagal (${error?.message || "unknown error"}) — dialihkan ke Local Engine.`);
-        setGenerated(toGeneratedCarousel(t, data, dna));
-      } else {
-        setGenerated(toGeneratedCarousel(t, data, dna));
       }
+
+      if (!usedFallback && settings.provider === "gemini" && settings.includeHeroImage) {
+        try {
+          result.dna.heroImage = await generateHeroImage(settings.apiKey, t, result.dna.badge);
+        } catch (imgErr) {
+          setHeroImageError(`Gambar cover gagal dibuat (${imgErr.message}) — slide tetap dipakai tanpa gambar.`);
+        }
+      }
+
+      setGenerated(result);
       setActiveIndex(0);
     } finally {
       setAiLoading(false);
     }
-  }, [topic, settings, activeModel, templateOverride, slideCount, runLocalEngine]);
+  }, [topic, settings, activeModel, templateOverride, slideCount, runLocalEngine, customBadge]);
 
   const handleTestConnection = async () => {
     setAiTestStatus(null);
@@ -258,6 +270,8 @@ export default function Home() {
           onTemplateChange={setTemplateOverride}
           slideCount={slideCount}
           onSlideCountChange={setSlideCount}
+          customBadge={customBadge}
+          onCustomBadgeChange={setCustomBadge}
           onGenerate={handleGenerate}
           aiLoading={aiLoading}
           providerName={PROVIDERS[settings.provider].name}
@@ -266,6 +280,12 @@ export default function Home() {
         {fallbackNotice && (
           <div style={{ marginTop: 12, display: "flex", alignItems: "flex-start", gap: 8, background: "#241B0F", border: "1px solid #4A3620", borderRadius: 10, padding: 10, fontSize: 12, color: "#FBBF7A" }}>
             {fallbackNotice}
+          </div>
+        )}
+
+        {heroImageError && (
+          <div style={{ marginTop: 12, display: "flex", alignItems: "flex-start", gap: 8, background: "#241B0F", border: "1px solid #4A3620", borderRadius: 10, padding: 10, fontSize: 12, color: "#FBBF7A" }}>
+            {heroImageError}
           </div>
         )}
 

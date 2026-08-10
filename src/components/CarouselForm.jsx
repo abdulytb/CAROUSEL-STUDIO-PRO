@@ -10,6 +10,7 @@ export default function CarouselForm({
   topic, onTopicChange,
   templateOverride, onTemplateChange,
   slideCount, onSlideCountChange,
+  customBadge, onCustomBadgeChange,
   onGenerate, aiLoading, providerName,
 }) {
   return (
@@ -22,6 +23,22 @@ export default function CarouselForm({
         placeholder="Contoh: 7 Kesalahan UMKM Dalam Mengelola Keuangan"
         style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: 12, color: "#fff", fontSize: 15, resize: "none", boxSizing: "border-box" }}
       />
+
+      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>
+        BADGE / WATERMARK <span style={{ color: "#5A5F6B", fontWeight: 400, textTransform: "none" }}>(opsional — kosongkan untuk otomatis)</span>
+      </label>
+      <input
+        type="text"
+        value={customBadge}
+        onChange={(e) => onCustomBadgeChange(e.target.value.slice(0, 24))}
+        placeholder="Contoh: @akunkamu, NAMA BRAND, dst"
+        style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 14, boxSizing: "border-box" }}
+      />
+      {customBadge && (
+        <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 6 }}>
+          Tampil di posisi badge tiap slide, menggantikan label kategori otomatis. Bentuknya (pill/kotak/polos) mengikuti Template yang dipilih.
+        </div>
+      )}
 
       <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>TEMPLATE</label>
       <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>

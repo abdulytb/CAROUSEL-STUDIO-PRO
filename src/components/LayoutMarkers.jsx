@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
 
 // Marker ini murni ADITIF — cuma nambah elemen kecil sebelum judul,
 // tidak mengubah struktur/warna/dekorasi template sama sekali. Dipanggil
@@ -77,19 +76,8 @@ export function BentoMarker({ slide, dna }) {
 // APAPUN framework/layout-nya. Bikin slide CTA kerasa beda dari slide isi
 // biasa: pill "tombol" dengan ikon panah, warna ikut Design DNA (jadi
 // otomatis beda tiap kategori/template, bukan satu warna hardcoded).
-export function CtaMarker({ slide, dna }) {
-  if (slide.role !== "cta") return null;
-  return (
-    <div
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 8,
-        background: dna.accentColor, color: "#fff", borderRadius: 999,
-        padding: "9px 20px", fontSize: 13, fontWeight: 800,
-        textTransform: "uppercase", letterSpacing: 1, marginBottom: 14,
-        boxShadow: `0 8px 20px ${dna.accentColor}55`,
-      }}
-    >
-      Aksi Selanjutnya <ArrowRight size={15} />
-    </div>
-  );
+export function CtaMarker() {
+  // User minta bar "Aksi Selanjutnya" dihilangkan — cukup CTA title (via
+  // marker/eyebrow lain di tiap template) tanpa pill tombol tambahan ini.
+  return null;
 }
