@@ -14,13 +14,27 @@ export function buildAIPrompt(topic, slideCount) {
   return `Anda adalah Content Engine untuk aplikasi pembuat carousel media sosial berbahasa Indonesia.
 Topik: "${topic}"
 
+ATURAN BAHASA (WAJIB, PALING PENTING): SEMUA teks di SEMUA field JSON — termasuk "badge", "eyebrow", "title", "body", "hashtags" (kecuali tanda "#"), dan "captions" — HARUS 100% Bahasa Indonesia. JANGAN pernah pakai kata bahasa Inggris untuk "badge" (contoh SALAH: "AI PRODUCTIVITY" — contoh BENAR: "PRODUKTIVITAS AI" atau "TIPS AI KERJA"). Ini aturan paling sering dilanggar, jadi cek ulang sebelum menjawab.
+
 ${countLine}
+
+ATURAN PENTING SOAL KUALITAS ISI (WAJIB DIIKUTI):
+- Setiap slide isi (body) HARUS berisi penjelasan yang benar-benar substantif — bukan cuma nama teknik/tips tanpa isi. Jelaskan KENAPA poin ini penting DAN BAGAIMANA cara menerapkannya secara konkret.
+- Sertakan detail spesifik kalau relevan: contoh nyata, angka/persentase perkiraan, langkah praktis, atau skenario konkret — bukan saran generik seperti "lakukan secara konsisten" tanpa penjelasan lanjutan.
+- Body tiap slide isi idealnya 2-4 kalimat yang padat informasi (bukan 1 kalimat template pendek), tapi tetap ringkas dan jangan bertele-tele — setiap kalimat harus menambah insight baru, bukan mengulang kalimat sebelumnya dengan kata lain.
+- HINDARI gaya generik ala artikel SEO/listicle internet yang dangkal ("tips-tips umum yang semua orang sudah tahu"). Tulis seolah orang yang benar-benar ahli di topik ini yang menjelaskan, dengan sudut pandang atau detail yang jarang dibahas.
+- Title tiap slide tetap singkat (headline), tapi body-nya yang membawa "daging"/substansi.
+
+ATURAN KHUSUS SLIDE CTA (SLIDE TERAKHIR):
+- JANGAN cantumkan link atau URL apa pun — di Instagram, link di dalam gambar/carousel tidak bisa diklik langsung, jadi itu percuma.
+- Gunakan gaya "umpan komentar": ajak pembaca komentar SATU KATA KUNCI singkat (huruf kapital, relevan sama topik, contoh: "MAU", "CUAN", "TIPS") untuk dapat info lanjutan/panduan/detail — ini terbukti menaikkan engagement karena orang harus komentar dulu.
+- Title slide CTA formatnya: Komentar "[KATA KUNCI]" di Bawah — body-nya janji singkat apa yang mereka dapat kalau komentar (boleh juga singgung cek bio kalau relevan, tapi jangan tulis URL).
 
 Balas HANYA dengan JSON valid, tanpa markdown, tanpa penjelasan tambahan, persis struktur ini:
 {
-  "badge": "label kategori singkat huruf kapital, maksimal 3 kata",
+  "badge": "label kategori singkat huruf kapital BAHASA INDONESIA, maksimal 3 kata (JANGAN bahasa Inggris)",
   "slides": [
-    {"eyebrow": "label kecil slide", "title": "judul singkat slide", "body": "isi/penjelasan slide, 1-2 kalimat"}
+    {"eyebrow": "label kecil slide", "title": "judul singkat slide (headline)", "body": "isi slide yang substantif, 2-4 kalimat, jelaskan kenapa dan bagaimana secara konkret — bukan cuma judul tips tanpa penjelasan"}
   ],
   "hashtags": ["#tag1", "#tag2"],
   "captions": {
