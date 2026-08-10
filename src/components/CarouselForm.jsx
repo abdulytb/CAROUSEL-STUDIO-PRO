@@ -10,6 +10,7 @@ export default function CarouselForm({
   topic, onTopicChange,
   templateOverride, onTemplateChange,
   slideCount, onSlideCountChange,
+  customBadge, onCustomBadgeChange,
   onGenerate, aiLoading, providerName,
 }) {
   return (
@@ -34,6 +35,15 @@ export default function CarouselForm({
           </button>
         ))}
       </div>
+
+      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>BADGE / WATERMARK (OPSIONAL)</label>
+      <input
+        type="text"
+        value={customBadge}
+        onChange={(e) => onCustomBadgeChange(e.target.value)}
+        placeholder="Kosongkan buat pakai label kategori otomatis, atau isi bebas misal @akunkamu"
+        style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}
+      />
 
       <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>JUMLAH SLIDE</label>
       <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
