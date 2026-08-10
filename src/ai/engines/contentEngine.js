@@ -134,6 +134,17 @@ function pick(pool, seed, i) {
   return pool[hashStr(`${seed}::${i}`) % pool.length];
 }
 
+// Elemen visual opsional (quote-box / checklist) — HANYA berpengaruh kalau
+// template yang dipakai adalah "Neon Prompt Card" (template lain mengabaikan
+// field ini). Mayoritas slide tetap polos (null) supaya tidak berlebihan;
+// hash per-slide biar variatif tapi konsisten tiap generate ulang topik sama.
+function pickCardStyle(topic, i) {
+  const r = hashStr(`${topic}::card::${i}`) % 5;
+  if (r === 0) return "quote";
+  if (r === 1) return "checklist";
+  return null;
+}
+
 /* --------------------------- Body slide builders --------------------------- */
 
 // Framework "numbered": listicle-problem, listicle-howto, checklist, reasons,
@@ -239,7 +250,7 @@ export function buildSlides(topic, framework, category, totalSlides) {
     body: generateHook(topic, coreTopic),
   });
 
-  slides.push(...buildBodySlides(framework, topic, coreTopic, desiredBody));
+  slides.push(...buildBodySlides(framework, topic, coreTopic, desiredBody).map((s, i) => ({ ...s, cardStyle: pickCardStyle(topic, i) })));
 
   const cta = generateCTA(topic);
   slides.push({ role: "cta", eyebrow: "CTA", title: cta.title, body: cta.body });
