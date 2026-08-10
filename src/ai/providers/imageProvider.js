@@ -1,44 +1,46 @@
-// Provider terpisah dari geminiProvider.js karena beda model & beda bentuk
-// respons: teks pakai gemini-2.5-flash / gemini-flash-latest (JSON di
-// response.text), gambar pakai gemini-2.5-flash-image dengan
-// responseModalities ["TEXT","IMAGE"] — hasilnya base64 di
-// candidates[0].content.parts[].inlineData, bukan teks biasa.
+// Provider gambar hero — pakai Pollinations.ai (image.pollinations.ai).
+// GRATIS TOTAL, TANPA API KEY, TANPA KARTU, TANPA BILLING.
 //
-// Model ini SELALU berbayar per-panggilan di luar kuota gratis harian akun
-// (beda dari kuota teks) — lihat catatan di CarouselForm/Header UI. Kalau
-// kuota habis atau key tidak didukung, lempar error yang jelas supaya
-// pemanggilnya (Home.jsx) bisa fallback dengan tenang (slide tetap jadi,
-// cuma tanpa gambar cover).
-
-const IMAGE_MODEL = "gemini-2.5-flash-image";
+// Sebelumnya pakai Gemini 2.5 Flash Image ("Nano Banana"), tapi model itu
+// punya kuota 0 di free tier (butuh billing aktif + auto-debet pay-as-you-go)
+// — lihat diskusi di chat, ini keputusan sadar buat hindari risiko billing.
+//
+// Signature function SENGAJA dipertahankan mirip versi lama (apiKey masih
+// jadi parameter pertama) supaya pemanggil (Home.jsx / SettingsPanel.jsx)
+// gak perlu dibongkar total — apiKey sekarang diabaikan (opsional).
+//
+// Kegagalan gambar TETAP tidak boleh menggagalkan carousel — pemanggilnya
+// (Home.jsx) sudah fallback ke slide tanpa gambar + notice heroImageError.
 
 export async function generateHeroImage(apiKey, topic, badge) {
-  if (!apiKey || !apiKey.trim()) throw new Error("API key belum diisi");
-
   const prompt = `Professional editorial photograph closely related to this topic: "${topic}" (context: ${badge || "general"}). Cinematic lighting, photorealistic, high detail, vertical portrait composition, no text or watermark or logo anywhere in the image, no visible captions.`;
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
-      }),
-    }
-  );
+  const encodedPrompt = encodeURIComponent(prompt);
+  // width/height 1080x1350 = rasio vertikal umum buat slide carousel IG.
+  // nologo=true buang watermark kecil Pollinations. seed acak biar tiap
+  // generate beda meski topik sama.
+  const seed = Math.floor(Math.random() * 1_000_000);
+  const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1350&nologo=true&seed=${seed}`;
+
+  const res = await fetch(url);
 
   if (!res.ok) {
     const detail = (await res.text().catch(() => "")).slice(0, 200);
-    throw new Error(`Gemini Image API error (${res.status}): ${detail}`);
+    throw new Error(`Pollinations Image error (${res.status}): ${detail}`);
   }
 
-  const data = await res.json();
-  const parts = data?.candidates?.[0]?.content?.parts || [];
-  const imagePart = parts.find((p) => p.inlineData);
-  if (!imagePart) {
-    throw new Error("Gemini Image: tidak ada gambar di respons (kemungkinan diblokir safety filter Google).");
+  const blob = await res.blob();
+  if (!blob || blob.size === 0) {
+    throw new Error("Pollinations Image: respons kosong (kemungkinan server sedang sibuk, coba lagi).");
   }
-  return `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
+
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Gagal konversi gambar ke base64"));
+    reader.readAsDataURL(blob);
+  });
+
+  // reader.result sudah dalam format "data:image/...;base64,..." lengkap
+  return base64;
 }
