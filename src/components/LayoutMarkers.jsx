@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { hashStr } from "../lib/hash.js";
 
 // Marker ini murni ADITIF — cuma nambah elemen kecil sebelum judul,
 // tidak mengubah struktur/warna/dekorasi template sama sekali. Dipanggil
@@ -72,24 +72,58 @@ export function BentoMarker({ slide, dna }) {
   );
 }
 
+// Layout "standard" (Hero Center) adalah FALLBACK default — dipakai kalau
+// framework konten tidak match ke 7 layout khusus lain (listicle, edukasi,
+// perbandingan, aida, dst — lihat FRAMEWORK_TO_LAYOUT di layoutEngine.js).
+// Artinya ini layout yang PALING SERING muncul, tapi sebelumnya satu-
+// satunya yang tidak punya dekorasi apa pun. Dipilih 3 gaya berbeda
+// (hash dari eyebrow+title slide) supaya dalam satu carousel yang sama pun
+// slide-nya tidak terasa monoton berulang gaya yang sama persis.
+export function StandardMarker({ slide, dna }) {
+  if (slide.role !== "body" || dna.layoutKey !== "standard") return null;
+  const variant = hashStr((slide.eyebrow || "") + slide.title) % 3;
+
+  if (variant === 0) {
+    // Gaya A: dot kecil + garis aksen tipis, mirip penanda checklist ringan.
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <div style={{ width: 9, height: 9, borderRadius: "50%", background: dna.accentColor, flexShrink: 0 }} />
+        <div style={{ width: 40, height: 2, background: `${dna.accentColor}44` }} />
+      </div>
+    );
+  }
+  if (variant === 1) {
+    // Gaya B: bracket sudut ala kutipan/label, sedikit lebih tegas.
+    return (
+      <div
+        style={{
+          display: "inline-block", fontSize: 13, fontWeight: 800, letterSpacing: 2,
+          color: dna.primaryColor, textTransform: "uppercase", marginBottom: 10,
+          borderLeft: `3px solid ${dna.primaryColor}`, paddingLeft: 10,
+        }}
+      >
+        {slide.eyebrow || "POIN"}
+      </div>
+    );
+  }
+  // Gaya C: bentuk diamond kecil di depan eyebrow — variasi paling dekoratif.
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
+      <div style={{ width: 10, height: 10, background: dna.accentColor, transform: "rotate(45deg)", flexShrink: 0, opacity: 0.85 }} />
+      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: dna.accentColor, textTransform: "uppercase" }}>
+        {slide.eyebrow}
+      </span>
+    </div>
+  );
+}
+
 // CTA style — beda dari 6 marker di atas: ini render untuk slide.role
 // === "cta" (bukan "body"), jadi selalu tampil di slide penutup carousel
 // APAPUN framework/layout-nya. Bikin slide CTA kerasa beda dari slide isi
 // biasa: pill "tombol" dengan ikon panah, warna ikut Design DNA (jadi
 // otomatis beda tiap kategori/template, bukan satu warna hardcoded).
-export function CtaMarker({ slide, dna }) {
-  if (slide.role !== "cta") return null;
-  return (
-    <div
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 8,
-        background: dna.accentColor, color: "#fff", borderRadius: 999,
-        padding: "9px 20px", fontSize: 13, fontWeight: 800,
-        textTransform: "uppercase", letterSpacing: 1, marginBottom: 14,
-        boxShadow: `0 8px 20px ${dna.accentColor}55`,
-      }}
-    >
-      Aksi Selanjutnya <ArrowRight size={15} />
-    </div>
-  );
+export function CtaMarker() {
+  // User minta bar "Aksi Selanjutnya" dihilangkan — cukup CTA title (via
+  // marker/eyebrow lain di tiap template) tanpa pill tombol tambahan ini.
+  return null;
 }
