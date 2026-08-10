@@ -20,6 +20,14 @@ export const IMAGE_STYLES = {
   minecraft: { label: "Minecraft", suffix: ", Minecraft blocky voxel art style, pixelated textures, game screenshot" },
   clay: { label: "Clay / Claymation", suffix: ", claymation stop-motion style, clay texture, soft studio lighting" },
   render3d: { label: "3D Render", suffix: ", 3D render, Pixar-style, vibrant colors, soft global illumination" },
+  cyberpunk: { label: "Cyberpunk", suffix: ", cyberpunk neon-lit futuristic style, vibrant neon colors, high contrast, rain-slicked streets aesthetic" },
+  anime: { label: "Anime", suffix: ", anime illustration style, vibrant cel-shaded coloring, detailed anime character design" },
+  watercolor: { label: "Watercolor", suffix: ", watercolor painting style, soft flowing pigments, artistic paper texture, delicate color bleeding" },
+  isometric: { label: "Isometric", suffix: ", isometric 3D illustration style, clean geometric shapes, flat vibrant colors, miniature diorama feel" },
+  vintage: { label: "Vintage Film", suffix: ", vintage retro film photography style, grainy film texture, warm faded tones, 1970s aesthetic" },
+  lineart: { label: "Line Art", suffix: ", minimalist line art style, single continuous line drawing, clean black outlines on plain background" },
+  lowpoly: { label: "Low Poly", suffix: ", low poly 3D style, faceted geometric shapes, flat shading, angular polygon aesthetic" },
+  vaporwave: { label: "Vaporwave", suffix: ", vaporwave aesthetic, retro-futuristic pastel neon colors, glitch elements, 80s synthwave vibe" },
 };
 
 export async function generateHeroImage({ proxyUrl, topic, badge, style }) {
