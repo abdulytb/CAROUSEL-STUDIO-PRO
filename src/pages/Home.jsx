@@ -98,7 +98,7 @@ export default function Home() {
     // independen total dari provider teks yang dipilih (lihat catatan di
     // SettingsPanel.jsx soal kenapa key-nya dipisah dari provider teks).
     const attachHeroImage = async (result) => {
-      if (settings.includeHeroImage && settings.geminiImageApiKey?.trim()) {
+      if (settings.includeHeroImage) {
         try {
           result.dna.heroImage = await generateHeroImage(settings.geminiImageApiKey, t, result.dna.badge);
         } catch (imgErr) {
@@ -110,7 +110,7 @@ export default function Home() {
 
     if (settings.provider === "local") {
       const result = runLocalEngine(t);
-      if (settings.includeHeroImage && settings.geminiImageApiKey?.trim()) {
+      if (settings.includeHeroImage) {
         setAiLoading(true);
         try {
           await attachHeroImage(result);
