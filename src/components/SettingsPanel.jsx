@@ -4,6 +4,7 @@ import {
   CheckCircle2, XCircle, AlertTriangle,
 } from "lucide-react";
 import { PROVIDERS } from "../ai/providers/index.js";
+import { IMAGE_STYLES } from "../ai/providers/imageProvider.js";
 import { chipStyle, secondaryBtnStyle } from "./common.jsx";
 
 export default function SettingsPanel({
@@ -125,10 +126,13 @@ export default function SettingsPanel({
       )}
 
       {/* Gambar hero SENGAJA di luar kondisi provider teks di atas — fitur
-          ini SELALU pakai Gemini (satu-satunya provider dengan model gambar
-          gratis di app ini), independen dari provider teks yang dipilih.
-          Jadi user bisa pakai Groq/OpenRouter/Local buat teks, tetap dapat
-          gambar hero via key Gemini terpisah di sini. */}
+          ini SELALU pakai Cloudflare Workers AI (via Worker proxy yang sama
+          dipakai buat Groq/OpenRouter), independen dari provider teks yang
+          dipilih. Jadi user bisa pakai Groq/OpenRouter/Local buat teks,
+          tetap dapat gambar hero via proxy yang sama.
+          Sebelumnya pakai Gemini (butuh billing) lalu Pollinations.ai
+          (kualitas/relevansi kurang) — sekarang Workers AI: gratis 10.000
+          neuron/hari, tanpa kartu, kualitas lebih baik. */}
       <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid #1E222B" }}>
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
           <input
@@ -141,20 +145,36 @@ export default function SettingsPanel({
           <span style={{ fontSize: 10, background: "#2A1E3A", color: "#C99BFF", borderRadius: 999, padding: "2px 8px", fontWeight: 700 }}>Eksperimental</span>
         </label>
         <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 4, marginLeft: 23 }}>
-          Slide pertama pakai foto hasil AI sebagai background. Fitur ini SELALU pakai Google Gemini — terpisah dari provider teks yang Anda pilih di atas (jadi tetap bisa dipakai walau teks pakai Groq/OpenRouter/Local). Kuota &amp; biaya API-nya terpisah dari kuota teks.
+          Slide pertama pakai foto hasil AI sebagai background. Fitur ini pakai Cloudflare Workers AI (gratis, 10.000 neuron/hari) lewat Worker proxy yang sama dipakai untuk Groq/OpenRouter — jadi tetap bisa dipakai walau teks pakai Local/provider lain.
         </div>
         {settings.includeHeroImage && (
           <div style={{ marginTop: 10 }}>
-            <label style={{ fontSize: 11, color: "#9BA0AC", fontWeight: 600 }}>API KEY GEMINI (KHUSUS GAMBAR)</label>
+            <label style={{ fontSize: 11, color: "#9BA0AC", fontWeight: 600 }}>PROXY URL (CLOUDFLARE WORKER)</label>
             <input
-              type="password"
-              value={settings.geminiImageApiKey || ""}
-              onChange={(e) => setSettings((s) => ({ ...s, geminiImageApiKey: e.target.value }))}
-              placeholder="Tempel API key Gemini (beda kolon dari provider teks di atas)"
+              type="text"
+              value={settings.heroImageProxyUrl || ""}
+              onChange={(e) => setSettings((s) => ({ ...s, heroImageProxyUrl: e.target.value }))}
+              placeholder="https://carousel-ai-proxy.<akun>.workers.dev"
               style={{ width: "100%", marginTop: 6, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}
             />
             <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 4 }}>
-              Dapatkan di aistudio.google.com/apikey. Kalau provider teks Anda di atas sudah Gemini, boleh tempel key yang sama di sini.
+              Worker yang sama seperti di atas (kalau sudah diisi di bagian Proxy Server, boleh tempel URL yang sama di sini). Butuh binding "Workers AI" bernama <code style={{ background: "#0B0D12", padding: "1px 4px", borderRadius: 4 }}>AI</code> — tambahkan di dashboard Cloudflare: Worker → Bindings → Add → Workers AI.
+            </div>
+
+            <label style={{ fontSize: 11, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>GAYA GAMBAR</label>
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+              {Object.entries(IMAGE_STYLES).map(([key, s]) => (
+                <button
+                  key={key}
+                  onClick={() => setSettings((prev) => ({ ...prev, imageStyle: key }))}
+                  style={chipStyle((settings.imageStyle || "realistic") === key)}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 6 }}>
+              Style ditambahkan otomatis ke prompt gambar internal — kolom topik yang Anda ketik tidak berubah.
             </div>
           </div>
         )}
