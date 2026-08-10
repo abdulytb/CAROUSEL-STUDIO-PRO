@@ -12,8 +12,12 @@ import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMa
  * template lain (baseSlideStyle, fitTitle/fitText, LayoutMarkers) supaya
  * export PNG/JPG/PDF/ZIP otomatis kompatibel tanpa kerjaan tambahan.
  *
- * Warna neon-nya IKUT Design DNA (dna.primaryColor) — bukan hardcode hijau
- * — supaya tetap konsisten kalau kategori topik beda-beda warnanya.
+ * v2 — revisi setelah feedback: (1) box neon sebelumnya dipaksa flex:1
+ * sehingga membungkus terlalu jauh dari teks kalau isinya pendek — sekarang
+ * box mengikuti ukuran konten (di-center secara vertikal oleh parent), dan
+ * (2) background polos hitam terasa sepi — ditambah gradasi radial pastel
+ * dari warna Design DNA + tekstur dot-grid halus supaya slide non-hero
+ * tetap terasa hidup tanpa mengganggu keterbacaan teks.
  */
 export default function NeonPromptTemplate({ slide, dna, index, total }) {
   const Icon = ICONS[dna.icon] || Briefcase;
@@ -24,16 +28,24 @@ export default function NeonPromptTemplate({ slide, dna, index, total }) {
   const num = (slide.eyebrow && slide.eyebrow.match(/\d+/) || [])[0];
 
   return (
-    <div style={{ ...base, background: "#0A0A0A", color: "#fff", padding: 44, display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        ...base,
+        backgroundColor: "#0A0A0F",
+        backgroundImage: `radial-gradient(circle at 14% 8%, ${dna.primaryColor}38, transparent 55%), radial-gradient(circle at 88% 94%, ${dna.accentColor}30, transparent 55%), radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)`,
+        backgroundSize: "100% 100%, 100% 100%, 26px 26px",
+        color: "#fff", padding: 44, display: "flex", flexDirection: "column", justifyContent: "center",
+      }}
+    >
       <div style={{ position: "absolute", bottom: 40, right: 48, fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.55)" }}>
         {String(index + 1)}/{String(total)}
       </div>
 
       <div
         style={{
-          flex: 1, border: `2.5px solid ${neon}`, borderRadius: 32,
+          border: `2.5px solid ${neon}`, borderRadius: 32,
           boxShadow: `0 0 22px ${neon}80, inset 0 0 18px ${neon}26`,
-          padding: 52, display: "flex", flexDirection: "column", justifyContent: "center",
+          padding: 48, display: "flex", flexDirection: "column",
         }}
       >
         <div
