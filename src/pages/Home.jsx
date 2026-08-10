@@ -28,6 +28,7 @@ import { secondaryBtnStyle } from "../components/common.jsx";
 
 const DEFAULT_SETTINGS = {
   provider: "local", apiKey: "", model: "", useProxy: false, proxyUrl: "", rememberApiKey: false, includeHeroImage: false,
+  heroImageProxyUrl: "", imageStyle: "realistic",
 };
 
 export default function Home() {
@@ -100,7 +101,12 @@ export default function Home() {
     const attachHeroImage = async (result) => {
       if (settings.includeHeroImage) {
         try {
-          result.dna.heroImage = await generateHeroImage(settings.geminiImageApiKey, t, result.dna.badge);
+          result.dna.heroImage = await generateHeroImage({
+            proxyUrl: settings.heroImageProxyUrl,
+            topic: t,
+            badge: result.dna.badge,
+            style: settings.imageStyle,
+          });
         } catch (imgErr) {
           setHeroImageError(`Gambar cover gagal dibuat (${imgErr.message}) — slide tetap dipakai tanpa gambar.`);
         }
