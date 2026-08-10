@@ -3,7 +3,7 @@ import { Briefcase } from "lucide-react";
 import { ICONS } from "../ai/engines/iconEngine.js";
 import { fitText, fitTitle } from "../lib/textFit.js";
 import { baseSlideStyle } from "../lib/slideStyle.js";
-import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
+import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, StandardMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
 
 /**
  * Template: PersonalBranding
@@ -26,6 +26,7 @@ export default function PersonalBrandingTemplate({ slide, dna, index, total }) {
   <MagazineMarker slide={slide} dna={dna} />
   <SidebarMarker slide={slide} dna={dna} />
   <BentoMarker slide={slide} dna={dna} />
+  <StandardMarker slide={slide} dna={dna} />
   <CtaMarker slide={slide} dna={dna} />
   <div style={{ marginTop: 26, fontSize: slide.role === "hook" ? fitTitle(slide.title, 52) : fitTitle(slide.title, 42), fontWeight: 400, lineHeight: 1.3, color: "#241C12" }}>{slide.title}</div>
   <div style={{ marginTop: 22, fontSize: fitText(slide.body, 26), lineHeight: 1.6, color: "#6B5D4C", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>{slide.body}</div>

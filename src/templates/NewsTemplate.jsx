@@ -3,7 +3,7 @@ import { Briefcase } from "lucide-react";
 import { ICONS } from "../ai/engines/iconEngine.js";
 import { fitText, fitTitle } from "../lib/textFit.js";
 import { baseSlideStyle } from "../lib/slideStyle.js";
-import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
+import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, StandardMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
 
 /**
  * Template: News
@@ -26,6 +26,7 @@ export default function NewsTemplate({ slide, dna, index, total }) {
   <MagazineMarker slide={slide} dna={dna} />
   <SidebarMarker slide={slide} dna={dna} />
   <BentoMarker slide={slide} dna={dna} />
+  <StandardMarker slide={slide} dna={dna} />
   <CtaMarker slide={slide} dna={dna} />
   <div style={{ marginTop: 30, fontSize: slide.role === "hook" ? fitTitle(slide.title, 56) : fitTitle(slide.title, 44), fontWeight: 800, lineHeight: 1.2 }}>{slide.title}</div>
   <div style={{ marginTop: 6, width: 60, height: 4, background: "#B91C1C" }} />

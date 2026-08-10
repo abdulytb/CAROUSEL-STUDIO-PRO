@@ -3,7 +3,7 @@ import { Briefcase } from "lucide-react";
 import { ICONS } from "../ai/engines/iconEngine.js";
 import { fitText, fitTitle } from "../lib/textFit.js";
 import { baseSlideStyle } from "../lib/slideStyle.js";
-import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
+import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, StandardMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
 
 /**
  * Template: Luxury
@@ -25,6 +25,7 @@ export default function LuxuryTemplate({ slide, dna, index, total }) {
     <MagazineMarker slide={slide} dna={dna} />
     <SidebarMarker slide={slide} dna={dna} />
     <BentoMarker slide={slide} dna={dna} />
+    <StandardMarker slide={slide} dna={dna} />
     <CtaMarker slide={slide} dna={dna} />
     <div style={{ marginTop: 40, fontSize: slide.role === "hook" ? fitTitle(slide.title, 58) : fitTitle(slide.title, 46), fontWeight: 400, lineHeight: 1.3, fontStyle: "italic" }}>{slide.title}</div>
     <div style={{ marginTop: 26, fontSize: fitText(slide.body, 27), lineHeight: 1.6, color: "#D9D2C4", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>{slide.body}</div>

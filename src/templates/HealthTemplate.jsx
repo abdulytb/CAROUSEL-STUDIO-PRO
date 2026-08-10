@@ -3,7 +3,7 @@ import { Briefcase } from "lucide-react";
 import { ICONS } from "../ai/engines/iconEngine.js";
 import { fitText, fitTitle } from "../lib/textFit.js";
 import { baseSlideStyle } from "../lib/slideStyle.js";
-import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
+import { TimelineMarker, BigNumberMarker, QuoteMarker, MagazineMarker, SidebarMarker, BentoMarker, StandardMarker, CtaMarker } from "../components/LayoutMarkers.jsx";
 
 /**
  * Template: Health
@@ -27,6 +27,7 @@ export default function HealthTemplate({ slide, dna, index, total }) {
     <MagazineMarker slide={slide} dna={dna} />
     <SidebarMarker slide={slide} dna={dna} />
     <BentoMarker slide={slide} dna={dna} />
+    <StandardMarker slide={slide} dna={dna} />
     <CtaMarker slide={slide} dna={dna} />
     <div style={{ marginTop: 32, fontSize: slide.role === "hook" ? fitTitle(slide.title, 56) : fitTitle(slide.title, 46), fontWeight: 700, color: "#173A34", lineHeight: 1.25 }}>{slide.title}</div>
     <div style={{ marginTop: 22, fontSize: fitText(slide.body, 28), lineHeight: 1.6, color: "#4E6B65" }}>{slide.body}</div>
