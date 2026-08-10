@@ -23,6 +23,7 @@ export const TEMPLATES = {
   news: { name: "News", font: "Georgia, 'Times New Roman', serif", radius: 0, shadow: false },
   infographic: { name: "Infographic", font: "'Segoe UI', system-ui, sans-serif", radius: 10, shadow: false },
   executive: { name: "Executive", font: "Georgia, 'Times New Roman', serif", radius: 4, shadow: false },
+  neonPrompt: { name: "Neon Prompt Card", font: "'Segoe UI', system-ui, sans-serif", radius: 32, shadow: false },
 };
 
 // Template default per kategori (dipakai kalau mode Auto/AI aktif).
