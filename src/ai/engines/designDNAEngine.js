@@ -26,6 +26,27 @@ export const TEMPLATES = {
   neonPrompt: { name: "Neon Prompt Card", font: "'Segoe UI', system-ui, sans-serif", radius: 32, shadow: false },
 };
 
+// Pilihan font manual — kalau user pilih selain "auto", ini menimpa font
+// bawaan template. Sengaja dibatasi ke font sistem/web-safe (bukan Google
+// Fonts via <link>) supaya render export (html-to-canvas) tetap konsisten
+// tanpa risiko font belum ter-load pas rasterisasi.
+export const FONT_OPTIONS = {
+  auto: { label: "Otomatis (ikut template)", value: null },
+  sans: { label: "Modern (Sans)", value: "'Segoe UI', system-ui, sans-serif" },
+  serif: { label: "Klasik (Serif)", value: "Georgia, 'Times New Roman', serif" },
+  mono: { label: "Kode (Mono)", value: "'Consolas', 'Courier New', monospace" },
+  rounded: { label: "Santai (Rounded)", value: "'Trebuchet MS', Verdana, sans-serif" },
+};
+
+// Skala ukuran teks — dikalikan ke SEMUA ukuran font dasar di 21 template
+// sekaligus lewat fitTitle/fitText (lihat textFit.js), bukan diedit per file.
+export const SIZE_OPTIONS = {
+  s: { label: "Kecil", scale: 0.85 },
+  m: { label: "Normal", scale: 1 },
+  l: { label: "Besar", scale: 1.15 },
+  xl: { label: "Ekstra Besar", scale: 1.3 },
+};
+
 // Template default per kategori (dipakai kalau mode Auto/AI aktif).
 export const CATEGORY_TEMPLATE_DEFAULT = {
   technology: "technology", marketing: "marketing", finance: "finance", health: "health",
