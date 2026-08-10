@@ -13,20 +13,21 @@ let currentScale = 1;
 
 export function setFontScale(scale) {
   currentScale = typeof scale === "number" && scale > 0 ? scale : 1;
-}
+  }
 
-export function fitText(text, base) {
-  const b = base * currentScale;
-  const len = (text || "").length;
-  if (len <= 70) return Math.round(b);
-  const scale = Math.max(0.6, 70 / len);
-  return Math.round(b * scale);
-}
+  export function fitText(text, base) {
+    const b = base * currentScale;
+      const len = (text || "").length;
+        if (len <= 70) return Math.round(b);
+          const scale = Math.max(0.6, 70 / len);
+            return Math.round(b * scale);
+            }
 
-export function fitTitle(text, base) {
-  const b = base * currentScale;
-  const len = (text || "").length;
-  if (len <= 24) return Math.round(b);
-  const scale = Math.max(0.55, 24 / len);
-  return Math.round(b * scale);
-}
+            export function fitTitle(text, base) {
+              const b = base * currentScale;
+                const len = (text || "").length;
+                  if (len <= 24) return Math.round(b);
+                    const scale = Math.max(0.55, 24 / len);
+                      return Math.round(b * scale);
+                      }
+                      

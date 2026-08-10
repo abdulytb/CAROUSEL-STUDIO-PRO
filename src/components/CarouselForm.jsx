@@ -8,88 +8,88 @@ const SLIDE_COUNT_OPTIONS = [5, 6, 7, 8, 9, 10];
 
 export default function CarouselForm({
   topic, onTopicChange,
-  templateOverride, onTemplateChange,
-  slideCount, onSlideCountChange,
-  customBadge, onCustomBadgeChange,
-  fontFamilyKey, onFontFamilyChange,
-  sizeKey, onSizeChange,
-  onGenerate, aiLoading, providerName,
-}) {
-  return (
-    <div style={{ background: "#12151C", border: "1px solid #1E222B", borderRadius: 16, padding: 16 }}>
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600 }}>TOPIK CAROUSEL</label>
-      <textarea
-        value={topic}
-        onChange={(e) => onTopicChange(e.target.value)}
-        rows={2}
-        placeholder="Contoh: 7 Kesalahan UMKM Dalam Mengelola Keuangan"
-        style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: 12, color: "#fff", fontSize: 15, resize: "none", boxSizing: "border-box" }}
-      />
+    templateOverride, onTemplateChange,
+      slideCount, onSlideCountChange,
+        customBadge, onCustomBadgeChange,
+          fontFamilyKey, onFontFamilyChange,
+            sizeKey, onSizeChange,
+              onGenerate, aiLoading, providerName,
+              }) {
+                return (
+                    <div style={{ background: "#12151C", border: "1px solid #1E222B", borderRadius: 16, padding: 16 }}>
+                          <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600 }}>TOPIK CAROUSEL</label>
+                                <textarea
+                                        value={topic}
+                                                onChange={(e) => onTopicChange(e.target.value)}
+                                                        rows={2}
+                                                                placeholder="Contoh: 7 Kesalahan UMKM Dalam Mengelola Keuangan"
+                                                                        style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: 12, color: "#fff", fontSize: 15, resize: "none", boxSizing: "border-box" }}
+                                                                              />
 
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>TEMPLATE</label>
-      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
-        <button onClick={() => onTemplateChange("auto")} style={chipStyle(templateOverride === "auto")}>
-          <Sparkles size={13} style={{ marginRight: 5 }} /> Auto (AI)
-        </button>
-        {TEMPLATE_OPTIONS.map(([key, t]) => (
-          <button key={key} onClick={() => onTemplateChange(key)} style={chipStyle(templateOverride === key)}>
-            {t.name}
-          </button>
-        ))}
-      </div>
+                                                                                    <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>TEMPLATE</label>
+                                                                                          <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+                                                                                                  <button onClick={() => onTemplateChange("auto")} style={chipStyle(templateOverride === "auto")}>
+                                                                                                            <Sparkles size={13} style={{ marginRight: 5 }} /> Auto (AI)
+                                                                                                                    </button>
+                                                                                                                            {TEMPLATE_OPTIONS.map(([key, t]) => (
+                                                                                                                                      <button key={key} onClick={() => onTemplateChange(key)} style={chipStyle(templateOverride === key)}>
+                                                                                                                                                  {t.name}
+                                                                                                                                                            </button>
+                                                                                                                                                                    ))}
+                                                                                                                                                                          </div>
 
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>BADGE / WATERMARK (OPSIONAL)</label>
-      <input
-        type="text"
-        value={customBadge}
-        onChange={(e) => onCustomBadgeChange(e.target.value)}
-        placeholder="Kosongkan buat pakai label kategori otomatis, atau isi bebas misal @akunkamu"
-        style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}
-      />
+                                                                                                                                                                                <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>BADGE / WATERMARK (OPSIONAL)</label>
+                                                                                                                                                                                      <input
+                                                                                                                                                                                              type="text"
+                                                                                                                                                                                                      value={customBadge}
+                                                                                                                                                                                                              onChange={(e) => onCustomBadgeChange(e.target.value)}
+                                                                                                                                                                                                                      placeholder="Kosongkan buat pakai label kategori otomatis, atau isi bebas misal @akunkamu"
+                                                                                                                                                                                                                              style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}
+                                                                                                                                                                                                                                    />
 
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>FONT</label>
-      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
-        {Object.entries(FONT_OPTIONS).map(([key, f]) => (
-          <button key={key} onClick={() => onFontFamilyChange(key)} style={chipStyle(fontFamilyKey === key)}>
-            {f.label}
-          </button>
-        ))}
-      </div>
+                                                                                                                                                                                                                                          <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>FONT</label>
+                                                                                                                                                                                                                                                <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+                                                                                                                                                                                                                                                        {Object.entries(FONT_OPTIONS).map(([key, f]) => (
+                                                                                                                                                                                                                                                                  <button key={key} onClick={() => onFontFamilyChange(key)} style={chipStyle(fontFamilyKey === key)}>
+                                                                                                                                                                                                                                                                              {f.label}
+                                                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                                                                ))}
+                                                                                                                                                                                                                                                                                                      </div>
 
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>UKURAN TEKS</label>
-      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
-        {Object.entries(SIZE_OPTIONS).map(([key, s]) => (
-          <button key={key} onClick={() => onSizeChange(key)} style={chipStyle(sizeKey === key)}>
-            {s.label}
-          </button>
-        ))}
-      </div>
+                                                                                                                                                                                                                                                                                                            <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>UKURAN TEKS</label>
+                                                                                                                                                                                                                                                                                                                  <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+                                                                                                                                                                                                                                                                                                                          {Object.entries(SIZE_OPTIONS).map(([key, s]) => (
+                                                                                                                                                                                                                                                                                                                                    <button key={key} onClick={() => onSizeChange(key)} style={chipStyle(sizeKey === key)}>
+                                                                                                                                                                                                                                                                                                                                                {s.label}
+                                                                                                                                                                                                                                                                                                                                                          </button>
+                                                                                                                                                                                                                                                                                                                                                                  ))}
+                                                                                                                                                                                                                                                                                                                                                                        </div>
 
-      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>JUMLAH SLIDE</label>
-      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
-        <button onClick={() => onSlideCountChange(null)} style={chipStyle(slideCount === null)}>
-          <Sparkles size={13} style={{ marginRight: 5 }} /> Auto
-        </button>
-        {SLIDE_COUNT_OPTIONS.map((n) => (
-          <button key={n} onClick={() => onSlideCountChange(n)} style={chipStyle(slideCount === n)}>
-            {n}
-          </button>
-        ))}
-      </div>
-      {slideCount !== null && (
-        <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 6 }}>
-          Beberapa jenis topik (kisah/studi kasus) punya struktur cerita tetap — jumlah slide bisa otomatis disesuaikan sedikit.
-        </div>
-      )}
+                                                                                                                                                                                                                                                                                                                                                                              <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>JUMLAH SLIDE</label>
+                                                                                                                                                                                                                                                                                                                                                                                    <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+                                                                                                                                                                                                                                                                                                                                                                                            <button onClick={() => onSlideCountChange(null)} style={chipStyle(slideCount === null)}>
+                                                                                                                                                                                                                                                                                                                                                                                                      <Sparkles size={13} style={{ marginRight: 5 }} /> Auto
+                                                                                                                                                                                                                                                                                                                                                                                                              </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                      {SLIDE_COUNT_OPTIONS.map((n) => (
+                                                                                                                                                                                                                                                                                                                                                                                                                                <button key={n} onClick={() => onSlideCountChange(n)} style={chipStyle(slideCount === n)}>
+                                                                                                                                                                                                                                                                                                                                                                                                                                            {n}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              ))}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {slideCount !== null && (
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div style={{ fontSize: 11, color: "#5A5F6B", marginTop: 6 }}>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Beberapa jenis topik (kisah/studi kasus) punya struktur cerita tetap — jumlah slide bisa otomatis disesuaikan sedikit.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          )}
 
-      <button
-        onClick={onGenerate}
-        disabled={aiLoading}
-        style={{ marginTop: 16, width: "100%", padding: "14px", borderRadius: 12, border: "none", background: "linear-gradient(90deg,#8B5CF6,#EC4899)", color: "#fff", fontSize: 15, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: aiLoading ? "default" : "pointer", opacity: aiLoading ? 0.7 : 1 }}
-      >
-        {aiLoading ? <Loader2 size={17} className="spin" /> : <Sparkles size={17} />}
-        {aiLoading ? `Memproses via ${providerName}...` : "Generate Carousel"}
-      </button>
-    </div>
-  );
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <button
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        onClick={onGenerate}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                disabled={aiLoading}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        style={{ marginTop: 16, width: "100%", padding: "14px", borderRadius: 12, border: "none", background: "linear-gradient(90deg,#8B5CF6,#EC4899)", color: "#fff", fontSize: 15, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: aiLoading ? "default" : "pointer", opacity: aiLoading ? 0.7 : 1 }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              >
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {aiLoading ? <Loader2 size={17} className="spin" /> : <Sparkles size={17} />}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {aiLoading ? `Memproses via ${providerName}...` : "Generate Carousel"}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          );
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }

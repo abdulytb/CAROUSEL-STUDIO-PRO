@@ -20,9 +20,9 @@ import { setFontScale } from "../lib/textFit.js";
 export default function SlideCanvas({ slide, dna, index, total }) {
   setFontScale(dna.fontScale);
 
-  if (slide.role === "hook" && dna.heroImage) {
-    return <HeroSlide slide={slide} dna={dna} />;
-  }
-  const Template = TEMPLATE_COMPONENTS[dna.templateKey] || ModernTemplate;
-  return <Template slide={slide} dna={dna} index={index} total={total} />;
-}
+    if (slide.role === "hook" && dna.heroImage) {
+        return <HeroSlide slide={slide} dna={dna} />;
+          }
+            const Template = TEMPLATE_COMPONENTS[dna.templateKey] || ModernTemplate;
+              return <Template slide={slide} dna={dna} index={index} total={total} />;
+              }
