@@ -18,6 +18,7 @@ import NewsTemplate from "./NewsTemplate";
 import InfographicTemplate from "./InfographicTemplate";
 import ExecutiveTemplate from "./ExecutiveTemplate";
 import ModernTemplate from "./ModernTemplate";
+import NeonPromptTemplate from "./NeonPromptTemplate";
 
 export const TEMPLATE_COMPONENTS = {
   dark: DarkTemplate,
@@ -40,4 +41,5 @@ export const TEMPLATE_COMPONENTS = {
   infographic: InfographicTemplate,
   executive: ExecutiveTemplate,
   modern: ModernTemplate,
+  neonPrompt: NeonPromptTemplate,
 };
