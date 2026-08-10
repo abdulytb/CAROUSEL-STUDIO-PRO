@@ -1,46 +1,48 @@
-// Provider gambar hero — pakai Pollinations.ai (image.pollinations.ai).
-// GRATIS TOTAL, TANPA API KEY, TANPA KARTU, TANPA BILLING.
+// Provider gambar hero — pakai Cloudflare Workers AI (model FLUX Schnell)
+// lewat Worker proxy milik user sendiri (proxy-server/worker.js, endpoint
+// POST /image). GRATIS 10.000 neuron/hari, TANPA kartu, TANPA auto-debet —
+// beda dari Gemini (butuh billing aktif) dan lebih relevan/berkualitas
+// dibanding Pollinations anonim (rate-limit ketat, kurang taat prompt).
 //
-// Sebelumnya pakai Gemini 2.5 Flash Image ("Nano Banana"), tapi model itu
-// punya kuota 0 di free tier (butuh billing aktif + auto-debet pay-as-you-go)
-// — lihat diskusi di chat, ini keputusan sadar buat hindari risiko billing.
-//
-// Signature function SENGAJA dipertahankan mirip versi lama (apiKey masih
-// jadi parameter pertama) supaya pemanggil (Home.jsx / SettingsPanel.jsx)
-// gak perlu dibongkar total — apiKey sekarang diabaikan (opsional).
+// WAJIB lewat proxy: Workers AI cuma bisa diakses dari dalam Worker
+// (binding env.AI), bukan REST API langsung dari browser.
 //
 // Kegagalan gambar TETAP tidak boleh menggagalkan carousel — pemanggilnya
 // (Home.jsx) sudah fallback ke slide tanpa gambar + notice heroImageError.
 
-export async function generateHeroImage(apiKey, topic, badge) {
-  const prompt = `Professional editorial photograph closely related to this topic: "${topic}" (context: ${badge || "general"}). Cinematic lighting, photorealistic, high detail, vertical portrait composition, no text or watermark or logo anywhere in the image, no visible captions.`;
+// Daftar gaya gambar — ditambahkan sebagai SUFFIX terpisah ke prompt
+// internal (bukan dicampur ke kolom topik yang diketik user), supaya
+// kolom topik tetap murni berisi apa yang diketik user.
+export const IMAGE_STYLES = {
+  realistic: { label: "Realistis", suffix: "" },
+  ghibli: { label: "Studio Ghibli", suffix: ", Studio Ghibli anime style, soft watercolor textures, whimsical hand-drawn illustration" },
+  pastel: { label: "Pastel", suffix: ", soft pastel color palette, dreamy minimalist illustration, gentle lighting" },
+  minecraft: { label: "Minecraft", suffix: ", Minecraft blocky voxel art style, pixelated textures, game screenshot" },
+  clay: { label: "Clay / Claymation", suffix: ", claymation stop-motion style, clay texture, soft studio lighting" },
+  render3d: { label: "3D Render", suffix: ", 3D render, Pixar-style, vibrant colors, soft global illumination" },
+};
 
-  const encodedPrompt = encodeURIComponent(prompt);
-  // width/height 1080x1350 = rasio vertikal umum buat slide carousel IG.
-  // nologo=true buang watermark kecil Pollinations. seed acak biar tiap
-  // generate beda meski topik sama.
-  const seed = Math.floor(Math.random() * 1_000_000);
-  const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1350&nologo=true&seed=${seed}`;
+export async function generateHeroImage({ proxyUrl, topic, badge, style }) {
+  if (!proxyUrl || !proxyUrl.trim()) {
+    throw new Error("Proxy URL (Cloudflare Worker) belum diisi — gambar hero butuh proxy karena Workers AI cuma bisa diakses dari server.");
+  }
 
-  const res = await fetch(url);
+  const styleSuffix = IMAGE_STYLES[style]?.suffix || "";
+  const prompt = `Professional editorial photograph closely related to this topic: "${topic}" (context: ${badge || "general"}). Cinematic lighting, high detail, vertical portrait composition, no text or watermark or logo anywhere in the image, no visible captions${styleSuffix}.`;
+
+  const endpoint = `${proxyUrl.trim().replace(/\/$/, "")}/image`;
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
 
   if (!res.ok) {
     const detail = (await res.text().catch(() => "")).slice(0, 200);
-    throw new Error(`Pollinations Image error (${res.status}): ${detail}`);
+    throw new Error(`Workers AI Image error (${res.status}): ${detail}`);
   }
 
-  const blob = await res.blob();
-  if (!blob || blob.size === 0) {
-    throw new Error("Pollinations Image: respons kosong (kemungkinan server sedang sibuk, coba lagi).");
-  }
-
-  const base64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Gagal konversi gambar ke base64"));
-    reader.readAsDataURL(blob);
-  });
-
-  // reader.result sudah dalam format "data:image/...;base64,..." lengkap
-  return base64;
+  const data = await res.json();
+  if (!data.image) throw new Error("Workers AI: respons tidak berisi gambar.");
+  return data.image; // sudah data URL base64 lengkap dari worker
 }
