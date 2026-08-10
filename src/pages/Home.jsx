@@ -6,7 +6,7 @@ import { detectFramework } from "../ai/engines/frameworkEngine.js";
 import { buildSlides } from "../ai/engines/contentEngine.js";
 import { generateHashtags } from "../ai/engines/hashtagEngine.js";
 import { generateCaptions } from "../ai/engines/captionEngine.js";
-import { buildDesignDNA } from "../ai/engines/designDNAEngine.js";
+import { buildDesignDNA, FONT_OPTIONS, SIZE_OPTIONS } from "../ai/engines/designDNAEngine.js";
 import { PROVIDERS, generateWithFallback, toGeneratedCarousel } from "../ai/providers/index.js";
 import { generateHeroImage } from "../ai/providers/imageProvider.js";
 import {
@@ -36,6 +36,8 @@ export default function Home() {
   const [templateOverride, setTemplateOverride] = useState(() => loadTemplateOverride());
   const [slideCount, setSlideCount] = useState(null); // null = Auto (deteksi dari teks topik)
   const [customBadge, setCustomBadge] = useState(""); // "" = pakai label kategori otomatis
+  const [fontFamilyKey, setFontFamilyKey] = useState("auto"); // key dari FONT_OPTIONS
+  const [sizeKey, setSizeKey] = useState("m"); // key dari SIZE_OPTIONS
   const [generated, setGenerated] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState("");
@@ -76,17 +78,28 @@ export default function Home() {
     return () => ro.disconnect();
   }, [generated]);
 
+  // Helper kecil dipakai di 2 jalur (Local & AI) — override dna.fontFamily
+  // & dna.fontScale dari pilihan user. "auto" berarti biarkan font bawaan
+  // template (dna.fontFamily) apa adanya.
+  const applyFontOverrides = useCallback((dna) => {
+    const fontOpt = FONT_OPTIONS[fontFamilyKey];
+    if (fontOpt?.value) dna.fontFamily = fontOpt.value;
+    dna.fontScale = SIZE_OPTIONS[sizeKey]?.scale ?? 1;
+    return dna;
+  }, [fontFamilyKey, sizeKey]);
+
   const runLocalEngine = useCallback((t) => {
     const category = detectCategory(t);
     const templateKey = templateOverride === "auto" ? undefined : templateOverride;
     const framework = detectFramework(t);
     const dna = buildDesignDNA(t, templateKey, framework.type);
     if (customBadge.trim()) dna.badge = customBadge.trim();
+    applyFontOverrides(dna);
     const slides = buildSlides(t, framework, category, slideCount);
     const hashtags = generateHashtags(t, category);
     const captions = generateCaptions(t, slides, hashtags);
     return { topic: t, dna, slides, hashtags, captions };
-  }, [templateOverride, slideCount, customBadge]);
+  }, [templateOverride, slideCount, customBadge, applyFontOverrides]);
 
   const handleGenerate = useCallback(async () => {
     const t = topic.trim();
@@ -138,11 +151,13 @@ export default function Home() {
       const framework = detectFramework(t);
       const dna = buildDesignDNA(t, templateKey, framework.type);
       if (customBadge.trim()) dna.badge = customBadge.trim();
+      applyFontOverrides(dna);
       const { data, usedFallback, error } = await generateWithFallback({ ...settings, model: activeModel, slideCount }, t);
       const result = toGeneratedCarousel(t, data, dna);
       // toGeneratedCarousel bisa nimpa dna.badge pakai badge hasil AI —
       // pastikan custom badge/watermark user tetap menang kalau diisi.
       if (customBadge.trim()) result.dna.badge = customBadge.trim();
+      applyFontOverrides(result.dna);
       if (usedFallback) {
         setFallbackNotice(`${PROVIDERS[settings.provider].name} gagal (${error?.message || "unknown error"}) — dialihkan ke Local Engine.`);
       }
@@ -154,7 +169,7 @@ export default function Home() {
     } finally {
       setAiLoading(false);
     }
-  }, [topic, settings, activeModel, templateOverride, slideCount, runLocalEngine, customBadge]);
+  }, [topic, settings, activeModel, templateOverride, slideCount, runLocalEngine, customBadge, applyFontOverrides]);
 
   const handleTestConnection = async () => {
     setAiTestStatus(null);
@@ -300,6 +315,10 @@ export default function Home() {
           onSlideCountChange={setSlideCount}
           customBadge={customBadge}
           onCustomBadgeChange={setCustomBadge}
+          fontFamilyKey={fontFamilyKey}
+          onFontFamilyChange={setFontFamilyKey}
+          sizeKey={sizeKey}
+          onSizeChange={setSizeKey}
           onGenerate={handleGenerate}
           aiLoading={aiLoading}
           providerName={PROVIDERS[settings.provider].name}

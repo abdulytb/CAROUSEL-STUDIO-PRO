@@ -1,6 +1,6 @@
 import React from "react";
 import { Sparkles, Loader2 } from "lucide-react";
-import { TEMPLATES } from "../ai/engines/designDNAEngine.js";
+import { TEMPLATES, FONT_OPTIONS, SIZE_OPTIONS } from "../ai/engines/designDNAEngine.js";
 import { chipStyle } from "./common.jsx";
 
 const TEMPLATE_OPTIONS = Object.entries(TEMPLATES);
@@ -11,6 +11,8 @@ export default function CarouselForm({
   templateOverride, onTemplateChange,
   slideCount, onSlideCountChange,
   customBadge, onCustomBadgeChange,
+  fontFamilyKey, onFontFamilyChange,
+  sizeKey, onSizeChange,
   onGenerate, aiLoading, providerName,
 }) {
   return (
@@ -44,6 +46,24 @@ export default function CarouselForm({
         placeholder="Kosongkan buat pakai label kategori otomatis, atau isi bebas misal @akunkamu"
         style={{ width: "100%", marginTop: 8, background: "#0B0D12", border: "1px solid #262A34", borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}
       />
+
+      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>FONT</label>
+      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+        {Object.entries(FONT_OPTIONS).map(([key, f]) => (
+          <button key={key} onClick={() => onFontFamilyChange(key)} style={chipStyle(fontFamilyKey === key)}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>UKURAN TEKS</label>
+      <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
+        {Object.entries(SIZE_OPTIONS).map(([key, s]) => (
+          <button key={key} onClick={() => onSizeChange(key)} style={chipStyle(sizeKey === key)}>
+            {s.label}
+          </button>
+        ))}
+      </div>
 
       <label style={{ fontSize: 12, color: "#9BA0AC", fontWeight: 600, marginTop: 14, display: "block" }}>JUMLAH SLIDE</label>
       <div style={{ display: "flex", gap: 8, marginTop: 8, overflowX: "auto", paddingBottom: 4 }}>
