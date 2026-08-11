@@ -41,10 +41,10 @@ export const TEMPLATES = {
                                                     // Skala ukuran teks — dikalikan ke SEMUA ukuran font dasar di 21 template
                                                     // sekaligus lewat fitTitle/fitText (lihat textFit.js), bukan diedit per file.
                                                     export const SIZE_OPTIONS = {
-                                                      s: { label: "Kecil", scale: 0.85 },
+                                                      s: { label: "Kecil", scale: 0.75 },
                                                         m: { label: "Normal", scale: 1 },
-                                                          l: { label: "Besar", scale: 1.15 },
-                                                            xl: { label: "Ekstra Besar", scale: 1.3 },
+                                                          l: { label: "Besar", scale: 1.3 },
+                                                            xl: { label: "Ekstra Besar", scale: 1.65 },
                                                             };
 
                                                             // Template default per kategori (dipakai kalau mode Auto/AI aktif).
